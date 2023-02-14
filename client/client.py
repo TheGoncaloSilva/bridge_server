@@ -3,6 +3,7 @@ import argparse
 import os
 import sys
 import logging
+import aioconsole
 from attr import dataclass
 from datetime import datetime
 
@@ -19,6 +20,8 @@ parent = os.path.dirname(current)
 # adding the parent directory to
 # the sys.path.
 sys.path.append(parent)
+
+import common.communication as comms
 
 @dataclass
 class Connection:
@@ -70,20 +73,25 @@ class Client:
         return (reader, writer)
 
 
-    async def client_life(self) -> None:
-        message: str = "Hello Server"
-        print(f'Send: {message!r}')
+    async def receive_client(self) -> None:
+        while True:
+            msg: dict = await comms.recv_dict(self.connection.reader)
+            
+            if msg == None: break
+            logger.info("Received: " + str(msg))
+
+            #print('Close the connection')
+            #self.connection.writer.close()
+
+    async def send_client(self) -> None:
+
+        while True:
+            await asyncio.sleep(0.5)
+            input_str: str = await aioconsole.ainput("MSG-> ")
+            msg: dict = {"msg": input_str}
+            await comms.send_dict(self.connection.writer, msg)
+
         
-        self.connection.writer.write(message.encode())
-        await self.connection.writer.drain()
-
-        data = await self.connection.reader.read(100)
-        print(f'Received: {data.decode()!r}')
-
-        print('Close the connection')
-        self.connection.writer.close()
-
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -137,10 +145,21 @@ if __name__ == "__main__":
 
         logger.info(f'Listenning on {ip}:{port}')
 
-        await client.client_life()
+        t1 = loop.create_task(client.receive_client())
+        t2 = loop.create_task(client.send_client())
+        await asyncio.wait([t1, t2])
 
     try:
-        asyncio.run(main(args.bind, args.port, args.nick))
+        if sys.version_info < (3, 10):
+            loop = asyncio.get_event_loop()
+        else:
+            try:
+                loop = asyncio.get_running_loop()
+            except RuntimeError:
+                loop = asyncio.new_event_loop()
+
+        loop.run_until_complete(main(args.bind, args.port, args.nick))
+        loop.close()
     except KeyboardInterrupt:
         logger.error("\Client Terminated")
     except OSError as e:

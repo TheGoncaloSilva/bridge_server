@@ -73,21 +73,22 @@ class Server:
     
 
     async def handle_client(self, reader : asyncio.streams.StreamReader, writer : asyncio.streams.StreamWriter) -> None:
-        data = await reader.read(100)
-        message = data.decode()
-        addr = writer.get_extra_info('peername')
+        while True:
+            msg = await comms.recv_dict(reader)
 
-        print(f"Received {message!r} from {addr!r}")
+            if msg == None: break
 
-        response: str =  "Hello from server"
-        print(f"Send: {response!r}")
-        response = response.encode()
-        writer.write(response)
-        await writer.drain()
+            addr = writer.get_extra_info('peername')
 
-        print("Close the connection")
-        writer.close()
-        await writer.wait_closed()
+            print(f"Received {msg!r} from {addr!r}")
+
+            response: dict =  {"msg": "Hello from server"}
+            print(f"Send: {response!r}")
+            await comms.send_dict(writer, response)
+
+            #print("Close the connection")
+            #writer.close()
+            #await writer.wait_closed()
 
 
 
