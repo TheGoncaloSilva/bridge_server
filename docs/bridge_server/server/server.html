@@ -1,0 +1,879 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>bridge_server.server.server API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>bridge_server.server.server</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import asyncio
+import argparse
+import logging
+import os
+import sys
+from datetime import datetime
+from attr import dataclass
+
+# Check https://www.geeksforgeeks.org/python-import-from-parent-directory/
+# For better information
+# getting the name of the directory
+# where this file is present.
+current = os.path.dirname(os.path.realpath(__file__))
+ 
+# Getting the parent directory name
+# where the current directory is present.
+parent = os.path.dirname(current)
+ 
+# adding the parent directory to
+# the sys.path.
+sys.path.append(parent)
+
+import common.communication as comms
+import common.utils as util
+
+@dataclass
+class ClientValues:
+    writer: asyncio.streams.StreamWriter
+    reader: asyncio.streams.StreamReader
+    nick: str
+    ip: str
+    port: int
+
+@dataclass
+class ServerValues:
+    server: asyncio.base_events.Server
+    ip: str
+    port: int
+
+INVALID_SEQ_NUMBER: int = -1
+
+def find_seq_number_by_stream_reader(stream: asyncio.streams.StreamReader, streams: dict[int,ClientValues]) -&gt; int:
+    &#34;&#34;&#34;
+    Function to get the identification number of a given StreamReader
+    Args:
+        - stream: Given Stream Reader
+        - streams: dictionary of Ids and a ClientValues object
+    Returns:
+        - integer Id of the ClientValue
+    &#34;&#34;&#34;
+    for ids in streams.keys():
+        streamReader : asyncio.streams.StreamReader = streams[ids].reader
+        if streamReader == stream:
+            return ids
+    return INVALID_SEQ_NUMBER
+
+
+def find_seq_number_by_stream_writer(stream: asyncio.streams.StreamWriter, streams: dict[int,ClientValues]) -&gt; int:
+    &#34;&#34;&#34;
+    Function to get the identification number of a given StreamWriter
+    Args:
+        - stream: Given Stream Writer
+        - streams: dictionary of Ids and a ClientValues object
+    Returns:
+        - integer Id of the ClientValues
+    &#34;&#34;&#34;
+    for ids in streams.keys():
+        streamWriter : asyncio.streams.StreamWriter = streams[ids].writer
+        if streamWriter == stream:
+            return ids
+    return INVALID_SEQ_NUMBER
+
+async def send_to_everyone(streams: dict[int,ClientValues], exceptions: list[asyncio.streams.StreamWriter], payload: dict) -&gt; None:
+    &#34;&#34;&#34;
+    Function to send data to all connected streams, excluding exceptions
+    Args:
+        - streams: dictionary of Ids and a ClientValues object
+        - exceptions: list with all the exception streams
+        - payload: data to send
+    &#34;&#34;&#34;
+    for ids in streams.keys():
+        streamWriter : asyncio.streams.StreamWriter = streams[ids].writer
+        if streamWriter not in exceptions:
+            await comms.send_dict(streamWriter, payload) 
+
+
+class Server:
+
+    def __init__(self, maxClients: int) -&gt; None:
+
+        self.maxClients: int = maxClients
+        self.clients: dict[int, ClientValues] = {} # 
+        self.server: ServerValues | None = None
+        self.lastId: int = 1
+        
+
+    async def create_server(self, ip: str, port: int) -&gt; asyncio.base_events.Server:
+        &#34;&#34;&#34;
+        Function that uses class values to create a Server with the 
+            designated Ip address and Port
+        Args:
+            - ip: Ip address of the Server
+            - port: Port of the Server to operate on
+        Returns:
+            - Asyncio Server object
+        Raises:
+            - ValueError: if Server was already established
+            - TypeError: if supplied  attributes are not of correct type  
+            - OSError: if connection wasn&#39;t established (handled by 
+            asyncio.open_connection function)
+        &#34;&#34;&#34;
+        if self.server != None: raise ValueError(f&#34;Server already defined&#34;)
+
+        if not isinstance(ip, str) or not isinstance(port, int):
+            raise TypeError(&#34;Wrong usage. Use (str, int) types&#34;)
+        
+        server = await asyncio.start_server(
+                                        self.handle_client, 
+                                        ip, 
+                                        port
+                                        )
+
+        return server
+    
+
+    async def new_client(self, msg: dict, reader: asyncio.streams.StreamReader, writer: asyncio.streams.StreamWriter) -&gt; dict | None:
+        try:
+            util.check_dict_fields(msg, [&#39;option&#39;])
+
+            # {&#34;option&#34;: &#34;join&#34;, &#34;nick&#34;: nick, &#34;ip&#34;: ip, &#34;port&#34;: port} -&gt; Join message
+            if msg[&#34;option&#34;] == &#34;join&#34;:
+                util.check_dict_fields(msg, [&#39;nick&#39;, &#39;ip&#39;, &#39;port&#39;])
+                if [client for client in self.clients if self.clients[client].nick == msg[&#39;nick&#39;]] == []:
+                    
+                    # Give the new client all current clients
+                    for ids in self.clients.keys():
+                        client: ClientValues = self.clients[ids]
+                        joinMsg: dict = {&#34;option&#34;: &#34;join&#34;, &#34;nick&#34;: client.nick, &#34;ip&#34;: client.ip, &#34;port&#34;: client.port}
+                        logger.debug(f&#34;Sending to {writer.get_extra_info(&#39;peername&#39;)}: {joinMsg}&#34;)
+                        await comms.send_dict(writer, joinMsg)
+
+
+                    self.clients[self.lastId] = (ClientValues(writer, reader, msg[&#34;nick&#34;], msg[&#34;ip&#34;], msg[&#34;port&#34;]))
+                    self.lastId = self.lastId + 1
+                    logger.warning(f&#34;Client {msg[&#39;nick&#39;]} with {msg[&#39;ip&#39;]}:{msg[&#39;port&#39;]} has entered&#34;)
+                    return msg
+                else:
+                    logger.debug(f&#34;Client already registered, message: {msg}&#34;)
+
+            else:
+                logger.debug(&#34;Unknow message option: &#34; + str(msg[&#39;option&#39;]))
+        except ValueError as e:
+            logger.debug(&#34;Message not in the correct type&#34;)
+        
+        return None
+        
+
+    async def process_client(self, msg: dict) -&gt;  dict | None:
+        try:
+            util.check_dict_fields(msg, [&#39;option&#39;])
+
+            # {&#34;option&#34;: &#34;message&#34;, &#34;message&#34;: message, &#34;nick&#34;: nick} -&gt; Message message
+            if msg[&#34;option&#34;] == &#34;message&#34;:
+                util.check_dict_fields(msg, [&#39;message&#39;, &#39;nick&#39;])
+                if [client for client in self.clients if self.clients[client].nick == msg[&#39;nick&#39;]] != []:
+                    logger.info(f&#34;Client {msg[&#39;nick&#39;]} at -&gt; {msg[&#39;message&#39;]}&#34;)
+                    return msg
+                else:
+                    logger.debug(f&#34;Client not registered, message: {msg}&#34;)
+
+            else:
+                logger.debug(&#34;Unknow message option: &#34; + str(msg[&#39;option&#39;]))
+        except ValueError as e:
+            logger.debug(&#34;Message not in the correct type&#34;)
+
+        return None
+
+
+    async def handle_client(self, reader : asyncio.streams.StreamReader, writer : asyncio.streams.StreamWriter) -&gt; None:
+        try:
+            while True:
+
+                msg = await comms.recv_dict(reader)
+                if msg == None: break
+
+                addr = writer.get_extra_info(&#39;peername&#39;)
+
+                logger.debug(f&#34;Received: {msg!r} from {addr!r}&#34;)
+                
+                seq: int = find_seq_number_by_stream_reader(reader, self.clients)
+                # New user
+                if seq == INVALID_SEQ_NUMBER:
+                    if len(self.clients) == self.maxClients:
+                        logger.warning(f&#34;Client from {addr} exceeded the maximum user number&#34;)
+                        writer.close(); await writer.wait_closed()
+                        break
+                    else:
+                        response: dict | None = await self.new_client(msg, reader, writer)
+                # Existing user
+                else:
+                    response: dict | None = await self.process_client(msg)           
+
+                if response != None:
+                    logger.debug(f&#34;Sending to everyone, minus sender: {response}&#34;)
+                    await send_to_everyone(self.clients, [writer], response)
+
+        except OSError as e:
+            logger.debug(&#34;Closed connection&#34;)
+            closedSeq: int = find_seq_number_by_stream_writer(writer , self.clients)
+            # New user
+            if seq == INVALID_SEQ_NUMBER:
+                logger.warning(&#34;Unregistered client disconnected&#34;)
+            # Existing user
+            else:
+                response: dict = {&#34;option&#34;: &#34;disconnect&#34;, &#34;nick&#34;: self.clients[closedSeq].nick}
+                client: ClientValues = self.clients.pop(closedSeq)
+                logger.warning(f&#34;Disconnecting {client.nick}&#34;)
+                logger.debug(f&#34;Sending to everyone: {response}&#34;)
+                await send_to_everyone(self.clients, [], response)
+
+if __name__ == &#34;__main__&#34;:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(&#34;--bind&#34;, help=&#34;IP address to bind to&#34;, default=&#34;127.0.0.1&#34;)
+    parser.add_argument(&#34;--port&#34;, help=&#34;TCP port&#34;, type=int, default=8005)
+    parser.add_argument(&#34;--maxClients&#34;, help=&#34;Maximum number of clients&#34;, type=int, default=5)
+    parser.add_argument(&#34;--log&#34;, help=&#34;Log threshold (default=INFO)&#34;, type=str, default=&#39;INFO&#39;)
+    args = parser.parse_args()
+
+    # check Logger value
+    numericLogLeved = getattr(logging, args.log.upper(), None)
+    if not isinstance(numericLogLeved, int):
+        raise ValueError(&#39;Invalid log level: %s&#39; % numericLogLeved)
+
+    # Creating an object
+    logger: logging.Logger= logging.getLogger(&#34;Monitor&#34;)
+    logger.setLevel(logging.DEBUG)
+
+    # create console handler and set level to log argument
+    ch = logging.StreamHandler()
+    ch.setLevel(numericLogLeved)
+    ch.setFormatter(logging.Formatter(&#39;%(levelname)s: %(message)s&#39;))
+
+    # create file handlet and set level to debug
+    if not os.path.exists(&#39;./logs&#39;):
+        os.mkdir(&#39;./logs&#39;)
+    logName = r&#39;./logs/server_&#39; + str(int(round(datetime.now().timestamp()))) + &#39;.log&#39;
+    fh = logging.FileHandler(logName)
+    fh.setLevel(logging.DEBUG)
+    fh.setFormatter(logging.Formatter(&#39;%(asctime)s - [%(name)s, %(levelname)s]: %(message)s&#39;))
+
+    # add ch to logger
+    logger.addHandler(ch)
+
+    # add fh to logger
+    logger.addHandler(fh)
+
+    async def main(ip: str, port: int, maxClients: int) -&gt; None:
+
+        # Create the server class
+        server: Server = Server(maxClients)
+
+        # Create the server
+        serverObj: asyncio.base_events.Server = await server.create_server(ip, port)
+
+        addrs = &#39;, &#39;.join(str(sock.getsockname()) for sock in serverObj.sockets)
+        logger.info(f&#39;Serving on {addrs}&#39;)
+
+        async with serverObj:
+            await serverObj.serve_forever()
+
+    try:
+        asyncio.run(main(args.bind, args.port, args.maxClients))
+    except KeyboardInterrupt:
+        logger.error(&#34;\Server Terminated&#34;)
+    except OSError as e:
+        logger.error(&#34;Failed to operate server: &#34; + str(e))
+    #except ValueError and TypeError as e:
+    #    print(&#34;Error: &#34; + str(e))</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="bridge_server.server.server.find_seq_number_by_stream_reader"><code class="name flex">
+<span>def <span class="ident">find_seq_number_by_stream_reader</span></span>(<span>stream: asyncio.streams.StreamReader, streams: dict[int, <a title="bridge_server.server.server.ClientValues" href="#bridge_server.server.server.ClientValues">ClientValues</a>]) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Function to get the identification number of a given StreamReader</p>
+<h2 id="args">Args</h2>
+<ul>
+<li>stream: Given Stream Reader</li>
+<li>streams: dictionary of Ids and a ClientValues object</li>
+</ul>
+<h2 id="returns">Returns</h2>
+<ul>
+<li>integer Id of the ClientValue</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def find_seq_number_by_stream_reader(stream: asyncio.streams.StreamReader, streams: dict[int,ClientValues]) -&gt; int:
+    &#34;&#34;&#34;
+    Function to get the identification number of a given StreamReader
+    Args:
+        - stream: Given Stream Reader
+        - streams: dictionary of Ids and a ClientValues object
+    Returns:
+        - integer Id of the ClientValue
+    &#34;&#34;&#34;
+    for ids in streams.keys():
+        streamReader : asyncio.streams.StreamReader = streams[ids].reader
+        if streamReader == stream:
+            return ids
+    return INVALID_SEQ_NUMBER</code></pre>
+</details>
+</dd>
+<dt id="bridge_server.server.server.find_seq_number_by_stream_writer"><code class="name flex">
+<span>def <span class="ident">find_seq_number_by_stream_writer</span></span>(<span>stream: asyncio.streams.StreamWriter, streams: dict[int, <a title="bridge_server.server.server.ClientValues" href="#bridge_server.server.server.ClientValues">ClientValues</a>]) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Function to get the identification number of a given StreamWriter</p>
+<h2 id="args">Args</h2>
+<ul>
+<li>stream: Given Stream Writer</li>
+<li>streams: dictionary of Ids and a ClientValues object</li>
+</ul>
+<h2 id="returns">Returns</h2>
+<ul>
+<li>integer Id of the ClientValues</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def find_seq_number_by_stream_writer(stream: asyncio.streams.StreamWriter, streams: dict[int,ClientValues]) -&gt; int:
+    &#34;&#34;&#34;
+    Function to get the identification number of a given StreamWriter
+    Args:
+        - stream: Given Stream Writer
+        - streams: dictionary of Ids and a ClientValues object
+    Returns:
+        - integer Id of the ClientValues
+    &#34;&#34;&#34;
+    for ids in streams.keys():
+        streamWriter : asyncio.streams.StreamWriter = streams[ids].writer
+        if streamWriter == stream:
+            return ids
+    return INVALID_SEQ_NUMBER</code></pre>
+</details>
+</dd>
+<dt id="bridge_server.server.server.send_to_everyone"><code class="name flex">
+<span>async def <span class="ident">send_to_everyone</span></span>(<span>streams: dict[int, <a title="bridge_server.server.server.ClientValues" href="#bridge_server.server.server.ClientValues">ClientValues</a>], exceptions: list[asyncio.streams.StreamWriter], payload: dict) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Function to send data to all connected streams, excluding exceptions</p>
+<h2 id="args">Args</h2>
+<ul>
+<li>streams: dictionary of Ids and a ClientValues object</li>
+<li>exceptions: list with all the exception streams</li>
+<li>payload: data to send</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def send_to_everyone(streams: dict[int,ClientValues], exceptions: list[asyncio.streams.StreamWriter], payload: dict) -&gt; None:
+    &#34;&#34;&#34;
+    Function to send data to all connected streams, excluding exceptions
+    Args:
+        - streams: dictionary of Ids and a ClientValues object
+        - exceptions: list with all the exception streams
+        - payload: data to send
+    &#34;&#34;&#34;
+    for ids in streams.keys():
+        streamWriter : asyncio.streams.StreamWriter = streams[ids].writer
+        if streamWriter not in exceptions:
+            await comms.send_dict(streamWriter, payload) </code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="bridge_server.server.server.ClientValues"><code class="flex name class">
+<span>class <span class="ident">ClientValues</span></span>
+<span>(</span><span>writer: asyncio.streams.StreamWriter, reader: asyncio.streams.StreamReader, nick: str, ip: str, port: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Method generated by attrs for class ClientValues.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class ClientValues:
+    writer: asyncio.streams.StreamWriter
+    reader: asyncio.streams.StreamReader
+    nick: str
+    ip: str
+    port: int</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="bridge_server.server.server.ClientValues.ip"><code class="name">var <span class="ident">ip</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="bridge_server.server.server.ClientValues.nick"><code class="name">var <span class="ident">nick</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="bridge_server.server.server.ClientValues.port"><code class="name">var <span class="ident">port</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="bridge_server.server.server.ClientValues.reader"><code class="name">var <span class="ident">reader</span> : asyncio.streams.StreamReader</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="bridge_server.server.server.ClientValues.writer"><code class="name">var <span class="ident">writer</span> : asyncio.streams.StreamWriter</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="bridge_server.server.server.Server"><code class="flex name class">
+<span>class <span class="ident">Server</span></span>
+<span>(</span><span>maxClients: int)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Server:
+
+    def __init__(self, maxClients: int) -&gt; None:
+
+        self.maxClients: int = maxClients
+        self.clients: dict[int, ClientValues] = {} # 
+        self.server: ServerValues | None = None
+        self.lastId: int = 1
+        
+
+    async def create_server(self, ip: str, port: int) -&gt; asyncio.base_events.Server:
+        &#34;&#34;&#34;
+        Function that uses class values to create a Server with the 
+            designated Ip address and Port
+        Args:
+            - ip: Ip address of the Server
+            - port: Port of the Server to operate on
+        Returns:
+            - Asyncio Server object
+        Raises:
+            - ValueError: if Server was already established
+            - TypeError: if supplied  attributes are not of correct type  
+            - OSError: if connection wasn&#39;t established (handled by 
+            asyncio.open_connection function)
+        &#34;&#34;&#34;
+        if self.server != None: raise ValueError(f&#34;Server already defined&#34;)
+
+        if not isinstance(ip, str) or not isinstance(port, int):
+            raise TypeError(&#34;Wrong usage. Use (str, int) types&#34;)
+        
+        server = await asyncio.start_server(
+                                        self.handle_client, 
+                                        ip, 
+                                        port
+                                        )
+
+        return server
+    
+
+    async def new_client(self, msg: dict, reader: asyncio.streams.StreamReader, writer: asyncio.streams.StreamWriter) -&gt; dict | None:
+        try:
+            util.check_dict_fields(msg, [&#39;option&#39;])
+
+            # {&#34;option&#34;: &#34;join&#34;, &#34;nick&#34;: nick, &#34;ip&#34;: ip, &#34;port&#34;: port} -&gt; Join message
+            if msg[&#34;option&#34;] == &#34;join&#34;:
+                util.check_dict_fields(msg, [&#39;nick&#39;, &#39;ip&#39;, &#39;port&#39;])
+                if [client for client in self.clients if self.clients[client].nick == msg[&#39;nick&#39;]] == []:
+                    
+                    # Give the new client all current clients
+                    for ids in self.clients.keys():
+                        client: ClientValues = self.clients[ids]
+                        joinMsg: dict = {&#34;option&#34;: &#34;join&#34;, &#34;nick&#34;: client.nick, &#34;ip&#34;: client.ip, &#34;port&#34;: client.port}
+                        logger.debug(f&#34;Sending to {writer.get_extra_info(&#39;peername&#39;)}: {joinMsg}&#34;)
+                        await comms.send_dict(writer, joinMsg)
+
+
+                    self.clients[self.lastId] = (ClientValues(writer, reader, msg[&#34;nick&#34;], msg[&#34;ip&#34;], msg[&#34;port&#34;]))
+                    self.lastId = self.lastId + 1
+                    logger.warning(f&#34;Client {msg[&#39;nick&#39;]} with {msg[&#39;ip&#39;]}:{msg[&#39;port&#39;]} has entered&#34;)
+                    return msg
+                else:
+                    logger.debug(f&#34;Client already registered, message: {msg}&#34;)
+
+            else:
+                logger.debug(&#34;Unknow message option: &#34; + str(msg[&#39;option&#39;]))
+        except ValueError as e:
+            logger.debug(&#34;Message not in the correct type&#34;)
+        
+        return None
+        
+
+    async def process_client(self, msg: dict) -&gt;  dict | None:
+        try:
+            util.check_dict_fields(msg, [&#39;option&#39;])
+
+            # {&#34;option&#34;: &#34;message&#34;, &#34;message&#34;: message, &#34;nick&#34;: nick} -&gt; Message message
+            if msg[&#34;option&#34;] == &#34;message&#34;:
+                util.check_dict_fields(msg, [&#39;message&#39;, &#39;nick&#39;])
+                if [client for client in self.clients if self.clients[client].nick == msg[&#39;nick&#39;]] != []:
+                    logger.info(f&#34;Client {msg[&#39;nick&#39;]} at -&gt; {msg[&#39;message&#39;]}&#34;)
+                    return msg
+                else:
+                    logger.debug(f&#34;Client not registered, message: {msg}&#34;)
+
+            else:
+                logger.debug(&#34;Unknow message option: &#34; + str(msg[&#39;option&#39;]))
+        except ValueError as e:
+            logger.debug(&#34;Message not in the correct type&#34;)
+
+        return None
+
+
+    async def handle_client(self, reader : asyncio.streams.StreamReader, writer : asyncio.streams.StreamWriter) -&gt; None:
+        try:
+            while True:
+
+                msg = await comms.recv_dict(reader)
+                if msg == None: break
+
+                addr = writer.get_extra_info(&#39;peername&#39;)
+
+                logger.debug(f&#34;Received: {msg!r} from {addr!r}&#34;)
+                
+                seq: int = find_seq_number_by_stream_reader(reader, self.clients)
+                # New user
+                if seq == INVALID_SEQ_NUMBER:
+                    if len(self.clients) == self.maxClients:
+                        logger.warning(f&#34;Client from {addr} exceeded the maximum user number&#34;)
+                        writer.close(); await writer.wait_closed()
+                        break
+                    else:
+                        response: dict | None = await self.new_client(msg, reader, writer)
+                # Existing user
+                else:
+                    response: dict | None = await self.process_client(msg)           
+
+                if response != None:
+                    logger.debug(f&#34;Sending to everyone, minus sender: {response}&#34;)
+                    await send_to_everyone(self.clients, [writer], response)
+
+        except OSError as e:
+            logger.debug(&#34;Closed connection&#34;)
+            closedSeq: int = find_seq_number_by_stream_writer(writer , self.clients)
+            # New user
+            if seq == INVALID_SEQ_NUMBER:
+                logger.warning(&#34;Unregistered client disconnected&#34;)
+            # Existing user
+            else:
+                response: dict = {&#34;option&#34;: &#34;disconnect&#34;, &#34;nick&#34;: self.clients[closedSeq].nick}
+                client: ClientValues = self.clients.pop(closedSeq)
+                logger.warning(f&#34;Disconnecting {client.nick}&#34;)
+                logger.debug(f&#34;Sending to everyone: {response}&#34;)
+                await send_to_everyone(self.clients, [], response)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="bridge_server.server.server.Server.create_server"><code class="name flex">
+<span>async def <span class="ident">create_server</span></span>(<span>self, ip: str, port: int) ‑> asyncio.base_events.Server</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Function that uses class values to create a Server with the
+designated Ip address and Port</p>
+<h2 id="args">Args</h2>
+<ul>
+<li>ip: Ip address of the Server</li>
+<li>port: Port of the Server to operate on</li>
+</ul>
+<h2 id="returns">Returns</h2>
+<ul>
+<li>Asyncio Server object</li>
+</ul>
+<h2 id="raises">Raises</h2>
+<ul>
+<li>ValueError: if Server was already established</li>
+<li>TypeError: if supplied
+attributes are not of correct type
+</li>
+<li>OSError: if connection wasn't established (handled by
+asyncio.open_connection function)</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def create_server(self, ip: str, port: int) -&gt; asyncio.base_events.Server:
+    &#34;&#34;&#34;
+    Function that uses class values to create a Server with the 
+        designated Ip address and Port
+    Args:
+        - ip: Ip address of the Server
+        - port: Port of the Server to operate on
+    Returns:
+        - Asyncio Server object
+    Raises:
+        - ValueError: if Server was already established
+        - TypeError: if supplied  attributes are not of correct type  
+        - OSError: if connection wasn&#39;t established (handled by 
+        asyncio.open_connection function)
+    &#34;&#34;&#34;
+    if self.server != None: raise ValueError(f&#34;Server already defined&#34;)
+
+    if not isinstance(ip, str) or not isinstance(port, int):
+        raise TypeError(&#34;Wrong usage. Use (str, int) types&#34;)
+    
+    server = await asyncio.start_server(
+                                    self.handle_client, 
+                                    ip, 
+                                    port
+                                    )
+
+    return server</code></pre>
+</details>
+</dd>
+<dt id="bridge_server.server.server.Server.handle_client"><code class="name flex">
+<span>async def <span class="ident">handle_client</span></span>(<span>self, reader: asyncio.streams.StreamReader, writer: asyncio.streams.StreamWriter) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def handle_client(self, reader : asyncio.streams.StreamReader, writer : asyncio.streams.StreamWriter) -&gt; None:
+    try:
+        while True:
+
+            msg = await comms.recv_dict(reader)
+            if msg == None: break
+
+            addr = writer.get_extra_info(&#39;peername&#39;)
+
+            logger.debug(f&#34;Received: {msg!r} from {addr!r}&#34;)
+            
+            seq: int = find_seq_number_by_stream_reader(reader, self.clients)
+            # New user
+            if seq == INVALID_SEQ_NUMBER:
+                if len(self.clients) == self.maxClients:
+                    logger.warning(f&#34;Client from {addr} exceeded the maximum user number&#34;)
+                    writer.close(); await writer.wait_closed()
+                    break
+                else:
+                    response: dict | None = await self.new_client(msg, reader, writer)
+            # Existing user
+            else:
+                response: dict | None = await self.process_client(msg)           
+
+            if response != None:
+                logger.debug(f&#34;Sending to everyone, minus sender: {response}&#34;)
+                await send_to_everyone(self.clients, [writer], response)
+
+    except OSError as e:
+        logger.debug(&#34;Closed connection&#34;)
+        closedSeq: int = find_seq_number_by_stream_writer(writer , self.clients)
+        # New user
+        if seq == INVALID_SEQ_NUMBER:
+            logger.warning(&#34;Unregistered client disconnected&#34;)
+        # Existing user
+        else:
+            response: dict = {&#34;option&#34;: &#34;disconnect&#34;, &#34;nick&#34;: self.clients[closedSeq].nick}
+            client: ClientValues = self.clients.pop(closedSeq)
+            logger.warning(f&#34;Disconnecting {client.nick}&#34;)
+            logger.debug(f&#34;Sending to everyone: {response}&#34;)
+            await send_to_everyone(self.clients, [], response)</code></pre>
+</details>
+</dd>
+<dt id="bridge_server.server.server.Server.new_client"><code class="name flex">
+<span>async def <span class="ident">new_client</span></span>(<span>self, msg: dict, reader: asyncio.streams.StreamReader, writer: asyncio.streams.StreamWriter) ‑> dict | None</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def new_client(self, msg: dict, reader: asyncio.streams.StreamReader, writer: asyncio.streams.StreamWriter) -&gt; dict | None:
+    try:
+        util.check_dict_fields(msg, [&#39;option&#39;])
+
+        # {&#34;option&#34;: &#34;join&#34;, &#34;nick&#34;: nick, &#34;ip&#34;: ip, &#34;port&#34;: port} -&gt; Join message
+        if msg[&#34;option&#34;] == &#34;join&#34;:
+            util.check_dict_fields(msg, [&#39;nick&#39;, &#39;ip&#39;, &#39;port&#39;])
+            if [client for client in self.clients if self.clients[client].nick == msg[&#39;nick&#39;]] == []:
+                
+                # Give the new client all current clients
+                for ids in self.clients.keys():
+                    client: ClientValues = self.clients[ids]
+                    joinMsg: dict = {&#34;option&#34;: &#34;join&#34;, &#34;nick&#34;: client.nick, &#34;ip&#34;: client.ip, &#34;port&#34;: client.port}
+                    logger.debug(f&#34;Sending to {writer.get_extra_info(&#39;peername&#39;)}: {joinMsg}&#34;)
+                    await comms.send_dict(writer, joinMsg)
+
+
+                self.clients[self.lastId] = (ClientValues(writer, reader, msg[&#34;nick&#34;], msg[&#34;ip&#34;], msg[&#34;port&#34;]))
+                self.lastId = self.lastId + 1
+                logger.warning(f&#34;Client {msg[&#39;nick&#39;]} with {msg[&#39;ip&#39;]}:{msg[&#39;port&#39;]} has entered&#34;)
+                return msg
+            else:
+                logger.debug(f&#34;Client already registered, message: {msg}&#34;)
+
+        else:
+            logger.debug(&#34;Unknow message option: &#34; + str(msg[&#39;option&#39;]))
+    except ValueError as e:
+        logger.debug(&#34;Message not in the correct type&#34;)
+    
+    return None</code></pre>
+</details>
+</dd>
+<dt id="bridge_server.server.server.Server.process_client"><code class="name flex">
+<span>async def <span class="ident">process_client</span></span>(<span>self, msg: dict) ‑> dict | None</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">async def process_client(self, msg: dict) -&gt;  dict | None:
+    try:
+        util.check_dict_fields(msg, [&#39;option&#39;])
+
+        # {&#34;option&#34;: &#34;message&#34;, &#34;message&#34;: message, &#34;nick&#34;: nick} -&gt; Message message
+        if msg[&#34;option&#34;] == &#34;message&#34;:
+            util.check_dict_fields(msg, [&#39;message&#39;, &#39;nick&#39;])
+            if [client for client in self.clients if self.clients[client].nick == msg[&#39;nick&#39;]] != []:
+                logger.info(f&#34;Client {msg[&#39;nick&#39;]} at -&gt; {msg[&#39;message&#39;]}&#34;)
+                return msg
+            else:
+                logger.debug(f&#34;Client not registered, message: {msg}&#34;)
+
+        else:
+            logger.debug(&#34;Unknow message option: &#34; + str(msg[&#39;option&#39;]))
+    except ValueError as e:
+        logger.debug(&#34;Message not in the correct type&#34;)
+
+    return None</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="bridge_server.server.server.ServerValues"><code class="flex name class">
+<span>class <span class="ident">ServerValues</span></span>
+<span>(</span><span>server: asyncio.base_events.Server, ip: str, port: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Method generated by attrs for class ServerValues.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class ServerValues:
+    server: asyncio.base_events.Server
+    ip: str
+    port: int</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="bridge_server.server.server.ServerValues.ip"><code class="name">var <span class="ident">ip</span> : str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="bridge_server.server.server.ServerValues.port"><code class="name">var <span class="ident">port</span> : int</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="bridge_server.server.server.ServerValues.server"><code class="name">var <span class="ident">server</span> : asyncio.base_events.Server</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="bridge_server.server" href="index.html">bridge_server.server</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="bridge_server.server.server.find_seq_number_by_stream_reader" href="#bridge_server.server.server.find_seq_number_by_stream_reader">find_seq_number_by_stream_reader</a></code></li>
+<li><code><a title="bridge_server.server.server.find_seq_number_by_stream_writer" href="#bridge_server.server.server.find_seq_number_by_stream_writer">find_seq_number_by_stream_writer</a></code></li>
+<li><code><a title="bridge_server.server.server.send_to_everyone" href="#bridge_server.server.server.send_to_everyone">send_to_everyone</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="bridge_server.server.server.ClientValues" href="#bridge_server.server.server.ClientValues">ClientValues</a></code></h4>
+<ul class="">
+<li><code><a title="bridge_server.server.server.ClientValues.ip" href="#bridge_server.server.server.ClientValues.ip">ip</a></code></li>
+<li><code><a title="bridge_server.server.server.ClientValues.nick" href="#bridge_server.server.server.ClientValues.nick">nick</a></code></li>
+<li><code><a title="bridge_server.server.server.ClientValues.port" href="#bridge_server.server.server.ClientValues.port">port</a></code></li>
+<li><code><a title="bridge_server.server.server.ClientValues.reader" href="#bridge_server.server.server.ClientValues.reader">reader</a></code></li>
+<li><code><a title="bridge_server.server.server.ClientValues.writer" href="#bridge_server.server.server.ClientValues.writer">writer</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="bridge_server.server.server.Server" href="#bridge_server.server.server.Server">Server</a></code></h4>
+<ul class="">
+<li><code><a title="bridge_server.server.server.Server.create_server" href="#bridge_server.server.server.Server.create_server">create_server</a></code></li>
+<li><code><a title="bridge_server.server.server.Server.handle_client" href="#bridge_server.server.server.Server.handle_client">handle_client</a></code></li>
+<li><code><a title="bridge_server.server.server.Server.new_client" href="#bridge_server.server.server.Server.new_client">new_client</a></code></li>
+<li><code><a title="bridge_server.server.server.Server.process_client" href="#bridge_server.server.server.Server.process_client">process_client</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="bridge_server.server.server.ServerValues" href="#bridge_server.server.server.ServerValues">ServerValues</a></code></h4>
+<ul class="">
+<li><code><a title="bridge_server.server.server.ServerValues.ip" href="#bridge_server.server.server.ServerValues.ip">ip</a></code></li>
+<li><code><a title="bridge_server.server.server.ServerValues.port" href="#bridge_server.server.server.ServerValues.port">port</a></code></li>
+<li><code><a title="bridge_server.server.server.ServerValues.server" href="#bridge_server.server.server.ServerValues.server">server</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
