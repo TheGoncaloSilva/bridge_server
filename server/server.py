@@ -21,17 +21,68 @@ parent = os.path.dirname(current)
 sys.path.append(parent)
 
 import common.communication as comms
+import common.utils as util
 
 @dataclass
 class ClientValues:
     writer: asyncio.streams.StreamWriter
     reader: asyncio.streams.StreamReader
+    nick: str
+    ip: str
+    port: int
 
 @dataclass
 class ServerValues:
     server: asyncio.base_events.Server
     ip: str
     port: int
+
+INVALID_SEQ_NUMBER: int = -1
+
+def find_seq_number_by_stream_reader(stream: asyncio.streams.StreamReader, streams: dict[int,ClientValues]) -> int:
+    """
+    Function to get the identification number of a given StreamReader
+    Args:
+        - stream: Given Stream Reader
+        - streams: dictionary of Ids and a ClientValues object
+    Returns:
+        - integer Id of the ClientValue
+    """
+    for ids in streams.keys():
+        streamReader : asyncio.streams.StreamReader = streams[ids].reader
+        if streamReader == stream:
+            return ids
+    return INVALID_SEQ_NUMBER
+
+
+def find_seq_number_by_stream_writer(stream: asyncio.streams.StreamWriter, streams: dict[int,ClientValues]) -> int:
+    """
+    Function to get the identification number of a given StreamWriter
+    Args:
+        - stream: Given Stream Writer
+        - streams: dictionary of Ids and a ClientValues object
+    Returns:
+        - integer Id of the ClientValues
+    """
+    for ids in streams.keys():
+        streamWriter : asyncio.streams.StreamWriter = streams[ids].writer
+        if streamWriter == stream:
+            return ids
+    return INVALID_SEQ_NUMBER
+
+async def send_to_everyone(streams: dict[int,ClientValues], exceptions: list[asyncio.streams.StreamWriter], payload: dict) -> None:
+    """
+    Function to send data to all connected streams, excluding exceptions
+    Args:
+        - streams: dictionary of Ids and a ClientValues object
+        - exceptions: list with all the exception streams
+        - payload: data to send
+    """
+    for ids in streams.keys():
+        streamWriter : asyncio.streams.StreamWriter = streams[ids].writer
+        if streamWriter not in exceptions:
+            await comms.send_dict(streamWriter, payload) 
+
 
 class Server:
 
@@ -72,26 +123,100 @@ class Server:
         return server
     
 
+    async def new_client(self, msg: dict, reader: asyncio.streams.StreamReader, writer: asyncio.streams.StreamWriter) -> dict | None:
+        try:
+            util.check_dict_fields(msg, ['option'])
+
+            # {"option": "join", "nick": nick, "ip": ip, "port": port} -> Join message
+            if msg["option"] == "join":
+                util.check_dict_fields(msg, ['nick', 'ip', 'port'])
+                if [client for client in self.clients if self.clients[client].nick == msg['nick']] == []:
+                    
+                    # Give the new client all current clients
+                    for ids in self.clients.keys():
+                        client: ClientValues = self.clients[ids]
+                        joinMsg: dict = {"option": "join", "nick": client.nick, "ip": client.ip, "port": client.port}
+                        logger.debug(f"Sending to {writer.get_extra_info('peername')}: {joinMsg}")
+                        await comms.send_dict(writer, joinMsg)
+
+
+                    self.clients[self.lastId] = (ClientValues(writer, reader, msg["nick"], msg["ip"], msg["port"]))
+                    self.lastId = self.lastId + 1
+                    logger.warning(f"Client {msg['nick']} with {msg['ip']}:{msg['port']} has entered")
+                    return msg
+                else:
+                    logger.debug(f"Client already registered, message: {msg}")
+
+            else:
+                logger.debug("Unknow message option: " + str(msg['option']))
+        except ValueError as e:
+            logger.debug("Message not in the correct type")
+        
+        return None
+        
+
+    async def process_client(self, msg: dict) ->  dict | None:
+        try:
+            util.check_dict_fields(msg, ['option'])
+
+            # {"option": "message", "message": message, "nick": nick} -> Message message
+            if msg["option"] == "message":
+                util.check_dict_fields(msg, ['message', 'nick'])
+                if [client for client in self.clients if self.clients[client].nick == msg['nick']] != []:
+                    logger.info(f"Client {msg['nick']} at -> {msg['message']}")
+                    return msg
+                else:
+                    logger.debug(f"Client not registered, message: {msg}")
+
+            else:
+                logger.debug("Unknow message option: " + str(msg['option']))
+        except ValueError as e:
+            logger.debug("Message not in the correct type")
+
+        return None
+
+
     async def handle_client(self, reader : asyncio.streams.StreamReader, writer : asyncio.streams.StreamWriter) -> None:
-        while True:
-            msg = await comms.recv_dict(reader)
+        try:
+            while True:
 
-            if msg == None: break
+                msg = await comms.recv_dict(reader)
+                if msg == None: break
 
-            addr = writer.get_extra_info('peername')
+                addr = writer.get_extra_info('peername')
 
-            print(f"Received {msg!r} from {addr!r}")
+                logger.debug(f"Received: {msg!r} from {addr!r}")
+                
+                seq: int = find_seq_number_by_stream_reader(reader, self.clients)
+                # New user
+                if seq == INVALID_SEQ_NUMBER:
+                    if len(self.clients) == self.maxClients:
+                        logger.warning(f"Client from {addr} exceeded the maximum user number")
+                        writer.close(); await writer.wait_closed()
+                        break
+                    else:
+                        response: dict | None = await self.new_client(msg, reader, writer)
+                # Existing user
+                else:
+                    response: dict | None = await self.process_client(msg)           
 
-            response: dict =  {"msg": "Hello from server"}
-            print(f"Send: {response!r}")
-            await comms.send_dict(writer, response)
+                if response != None:
+                    logger.debug(f"Sending to everyone, minus sender: {response}")
+                    await send_to_everyone(self.clients, [writer], response)
 
-            #print("Close the connection")
-            #writer.close()
-            #await writer.wait_closed()
-
-
-
+        except OSError as e:
+            logger.debug("Closed connection")
+            closedSeq: int = find_seq_number_by_stream_writer(writer , self.clients)
+            # New user
+            if seq == INVALID_SEQ_NUMBER:
+                logger.warning("Unregistered client disconnected")
+            # Existing user
+            else:
+                response: dict = {"option": "disconnect", "nick": self.clients[closedSeq].nick}
+                client: ClientValues = self.clients.pop(closedSeq)
+                logger.warning(f"Disconnecting {client.nick}")
+                logger.debug(f"Sending to everyone: {response}")
+                await send_to_everyone(self.clients, [], response)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

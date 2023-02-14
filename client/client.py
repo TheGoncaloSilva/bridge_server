@@ -22,6 +22,7 @@ parent = os.path.dirname(current)
 sys.path.append(parent)
 
 import common.communication as comms
+import common.utils as util
 
 @dataclass
 class Connection:
@@ -42,7 +43,9 @@ class Client:
 
         self.clients: list[ClientValues] = [] 
         self.connection: Connection | None = None
-        self.nick = nick
+        self.nick: str = nick
+        self.ip: str = ""
+        self.port: int = 0
         
 
     async def connect_client(self, ip: str, port: int) -> tuple:
@@ -71,14 +74,59 @@ class Client:
         self.connection = Connection(reader, writer, ip, port)
 
         return (reader, writer)
+    
 
+    async def process_message(self, msg: dict) -> None:
+        try:
+            util.check_dict_fields(msg, ['option'])
+
+            # {"option": "join", "nick": nick, "ip": ip, "port": port} -> Join message
+            if msg["option"] == "join":
+                util.check_dict_fields(msg, ['nick', 'ip', 'port'])
+                if [client for client in self.clients if client.nick == msg['nick']] == []:
+                    self.clients.append(ClientValues(msg["nick"], msg["ip"], msg["port"]))
+                    logger.info(f"Client {msg['nick']} with {msg['ip']}:{msg['port']} has entered")
+
+            # {"option": "message", "message": message, "nick": nick} -> Message message
+            elif msg["option"] == "message":
+                util.check_dict_fields(msg, ['message', 'nick'])
+                if [client for client in self.clients if client.nick == msg['nick']] != []:
+                    logger.info(f"Client {msg['nick']}-> {msg['message']}")
+                else:
+                    logger.debug(f"Client not registered, message: {msg}")
+
+            # {"option": "disconnect", "nick": nick} -> Disconnect message
+            elif msg["option"] == "disconnect":
+                util.check_dict_fields(msg, ['nick'])
+                if [client for client in self.clients if client.nick == msg['nick']] != []:     
+                    self.clients.remove([client for client in self.clients if client == msg["nick"]][0])
+                    logger.info(f"Client {msg['nick']} with {msg['ip']}:{msg['port']} has left")
+                else:
+                    logger.debug(f"Client not recognized, message: {msg}")
+
+            else:
+                logger.debug("Unknow message option: " + str(msg['option']))
+        except ValueError as e:
+            logger.debug("Message not in the correct type")
+            return
+            
 
     async def receive_client(self) -> None:
+        ipRaw: tuple= self.connection.writer.get_extra_info('peername')
+        self.ip: str = ipRaw[0]
+        self.port: int = ipRaw[1]
+        joinMsg: dict =  {"option": "join", "nick": self.nick, "ip": self.ip, "port": self.port}
+        await comms.send_dict(self.connection.writer, joinMsg)
+
         while True:
             msg: dict = await comms.recv_dict(self.connection.reader)
             
             if msg == None: break
-            logger.info("Received: " + str(msg))
+
+            logger.debug("Received: " + str(msg))
+
+            await self.process_message(msg)
+
 
             #print('Close the connection')
             #self.connection.writer.close()
@@ -88,7 +136,8 @@ class Client:
         while True:
             await asyncio.sleep(0.5)
             input_str: str = await aioconsole.ainput("MSG-> ")
-            msg: dict = {"msg": input_str}
+            msg: dict = {"option": "message", "message": input_str, "nick": self.nick}
+            logger.debug("sending: " + str(msg))
             await comms.send_dict(self.connection.writer, msg)
 
         
