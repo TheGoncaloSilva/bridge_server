@@ -1,6 +1,5 @@
 """
-`communication` package has methods used for exchanging messages between
-the game entities
+`communication` package has methods used for exchanging messages
 """
 import json
 import asyncio

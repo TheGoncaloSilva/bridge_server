@@ -1,3 +1,6 @@
+"""
+`client` package is used to represent a client entity
+"""
 import asyncio
 import argparse
 import os
@@ -26,6 +29,9 @@ import common.utils as util
 
 @dataclass
 class Connection:
+    """
+    Class used to save a connection between the client and the server
+    """
     reader: asyncio.streams.StreamReader
     writer: asyncio.streams.StreamWriter
     ip: str
@@ -33,12 +39,17 @@ class Connection:
 
 @dataclass
 class ClientValues:
+    """
+    Class used to store the associated values of each client
+    """
     nick: str
     ip: str
     port: int 
 
 class Client:
-
+    """
+    Class that enables the client
+    """
     def __init__(self, nick: str) -> None:
 
         self.clients: list[ClientValues] = [] 
@@ -77,6 +88,11 @@ class Client:
     
 
     async def process_message(self, msg: dict) -> None:
+        """
+        Function to process a message received from the server
+        Args:
+            - msg: Received message
+        """
         try:
             util.check_dict_fields(msg, ['option'])
 
@@ -112,10 +128,19 @@ class Client:
             
 
     async def receive_client(self) -> None:
+        """
+        Main Function used to just handle the reception of data from the    
+            server
+        """
         ipRaw: tuple= self.connection.writer.get_extra_info('peername')
         self.ip: str = ipRaw[0]
         self.port: int = ipRaw[1]
-        joinMsg: dict =  {"option": "join", "nick": self.nick, "ip": self.ip, "port": self.port}
+        joinMsg: dict =  {
+                        "option": "join", 
+                        "nick": self.nick, 
+                        "ip": self.ip, 
+                        "port": self.port
+                        }
         await comms.send_dict(self.connection.writer, joinMsg)
 
         while True:
@@ -132,11 +157,18 @@ class Client:
             #self.connection.writer.close()
 
     async def send_client(self) -> None:
-
+        """
+        Main Function used to just handle the sending of data to the    
+            server
+        """
         while True:
             await asyncio.sleep(0.5)
             input_str: str = await aioconsole.ainput("MSG-> ")
-            msg: dict = {"option": "message", "message": input_str, "nick": self.nick}
+            msg: dict = {
+                        "option": "message", 
+                        "message": input_str, 
+                        "nick": self.nick
+                        }
             logger.debug("sending: " + str(msg))
             await comms.send_dict(self.connection.writer, msg)
 
@@ -146,9 +178,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--bind", help="IP address to bind to", default="127.0.0.1")
     parser.add_argument("--port", help="TCP port", type=int, default=8005)
-    parser.add_argument("--maxClients", help="Maximum number of clients", type=int, default=5)
-    parser.add_argument("--log", help="Log threshold (default=INFO)", type=str, default='INFO')
-    parser.add_argument("--nick", help="Nick for the player (Max 20 characters)", type=str, default="player")
+    parser.add_argument("--maxClients", help="Maximum number of clients", 
+                            type=int, default=5)
+    parser.add_argument("--log", help="Log threshold (default=INFO)", 
+                            type=str, default='INFO')
+    parser.add_argument("--nick", help="Nick for the player (Max 20 characters)", 
+                    type=str, default="player")
     args = parser.parse_args()
 
     # check Logger value
@@ -169,7 +204,8 @@ if __name__ == "__main__":
     # create file handlet and set level to debug
     if not os.path.exists('./logs'):
         os.mkdir('./logs')
-    logName = r'./logs/client_' + args.nick + "_" + str(int(round(datetime.now().timestamp()))) + '.log'
+    logName = (r'./logs/client_' + args.nick + "_" 
+                + str(int(round(datetime.now().timestamp()))) + '.log')
     fh = logging.FileHandler(logName)
     fh.setLevel(logging.DEBUG)
     fh.setFormatter(logging.Formatter('%(asctime)s - [%(name)s, %(levelname)s]: %(message)s'))
@@ -213,5 +249,5 @@ if __name__ == "__main__":
         logger.error("\Client Terminated")
     except OSError as e:
         logger.error("No Connection to Server: " + str(e))
-    #except ValueError and TypeError as e:
-    #    print("Error: " + str(e))
+    except Exception as e:
+        print("Error: " + str(e))

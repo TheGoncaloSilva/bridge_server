@@ -1,4 +1,6 @@
-
+"""
+`utils` packages has functions that can be used by client and server
+"""
 def check_dict_fields(msg: dict , expectedFields: list[str]) -> None:
     """
     Function to check if the given dictionaries has the expected keys

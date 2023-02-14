@@ -1,3 +1,6 @@
+"""
+`server` package is used to represent a server entity
+"""
 import asyncio
 import argparse
 import logging
@@ -25,6 +28,9 @@ import common.utils as util
 
 @dataclass
 class ClientValues:
+    """
+    Class used to store the associated values of each client
+    """
     writer: asyncio.streams.StreamWriter
     reader: asyncio.streams.StreamReader
     nick: str
@@ -33,6 +39,9 @@ class ClientValues:
 
 @dataclass
 class ServerValues:
+    """
+    Class used to store the values of the server
+    """
     server: asyncio.base_events.Server
     ip: str
     port: int
@@ -85,7 +94,9 @@ async def send_to_everyone(streams: dict[int,ClientValues], exceptions: list[asy
 
 
 class Server:
-
+    """
+    Class that enables the server
+    """
     def __init__(self, maxClients: int) -> None:
 
         self.maxClients: int = maxClients
@@ -123,7 +134,18 @@ class Server:
         return server
     
 
-    async def new_client(self, msg: dict, reader: asyncio.streams.StreamReader, writer: asyncio.streams.StreamWriter) -> dict | None:
+    async def new_client(self, msg: dict, reader: asyncio.streams.StreamReader, 
+                    writer: asyncio.streams.StreamWriter) -> dict | None:
+        """
+        Function used to process a new connection by a client
+        Args:
+            - msg: message sent by the client
+            - reader: Reader stream of the client
+            - writer: Writer stream of the client
+        Returns:
+            - A dictionary object to send to all clients, excluding the 
+                connected client, or None in case it is not necessary
+        """
         try:
             util.check_dict_fields(msg, ['option'])
 
@@ -156,6 +178,15 @@ class Server:
         
 
     async def process_client(self, msg: dict) ->  dict | None:
+        """
+        Function used to process a message 
+        Args:
+            - msg: message sent by the client
+        Returns:
+            - A dictionary object to send to all clients, excluding the 
+                client that sent the message, or None in case it is 
+                not necessary
+        """
         try:
             util.check_dict_fields(msg, ['option'])
 
@@ -177,6 +208,9 @@ class Server:
 
 
     async def handle_client(self, reader : asyncio.streams.StreamReader, writer : asyncio.streams.StreamWriter) -> None:
+        """
+        Main function used to operate clients
+        """
         try:
             while True:
 
@@ -274,5 +308,5 @@ if __name__ == "__main__":
         logger.error("\Server Terminated")
     except OSError as e:
         logger.error("Failed to operate server: " + str(e))
-    #except ValueError and TypeError as e:
-    #    print("Error: " + str(e))
+    except Exception as e:
+        print("Error: " + str(e))
