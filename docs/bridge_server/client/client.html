@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>bridge_server.client.client API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="`client` package is used to represent a client entity" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,11 +22,15 @@
 <h1 class="title">Module <code>bridge_server.client.client</code></h1>
 </header>
 <section id="section-intro">
+<p><code>client</code> package is used to represent a client entity</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import asyncio
+<pre><code class="python">&#34;&#34;&#34;
+`client` package is used to represent a client entity
+&#34;&#34;&#34;
+import asyncio
 import argparse
 import os
 import sys
@@ -54,6 +58,9 @@ import common.utils as util
 
 @dataclass
 class Connection:
+    &#34;&#34;&#34;
+    Class used to save a connection between the client and the server
+    &#34;&#34;&#34;
     reader: asyncio.streams.StreamReader
     writer: asyncio.streams.StreamWriter
     ip: str
@@ -61,12 +68,17 @@ class Connection:
 
 @dataclass
 class ClientValues:
+    &#34;&#34;&#34;
+    Class used to store the associated values of each client
+    &#34;&#34;&#34;
     nick: str
     ip: str
     port: int 
 
 class Client:
-
+    &#34;&#34;&#34;
+    Class that enables the client
+    &#34;&#34;&#34;
     def __init__(self, nick: str) -&gt; None:
 
         self.clients: list[ClientValues] = [] 
@@ -105,6 +117,11 @@ class Client:
     
 
     async def process_message(self, msg: dict) -&gt; None:
+        &#34;&#34;&#34;
+        Function to process a message received from the server
+        Args:
+            - msg: Received message
+        &#34;&#34;&#34;
         try:
             util.check_dict_fields(msg, [&#39;option&#39;])
 
@@ -140,10 +157,19 @@ class Client:
             
 
     async def receive_client(self) -&gt; None:
+        &#34;&#34;&#34;
+        Main Function used to just handle the reception of data from the    
+            server
+        &#34;&#34;&#34;
         ipRaw: tuple= self.connection.writer.get_extra_info(&#39;peername&#39;)
         self.ip: str = ipRaw[0]
         self.port: int = ipRaw[1]
-        joinMsg: dict =  {&#34;option&#34;: &#34;join&#34;, &#34;nick&#34;: self.nick, &#34;ip&#34;: self.ip, &#34;port&#34;: self.port}
+        joinMsg: dict =  {
+                        &#34;option&#34;: &#34;join&#34;, 
+                        &#34;nick&#34;: self.nick, 
+                        &#34;ip&#34;: self.ip, 
+                        &#34;port&#34;: self.port
+                        }
         await comms.send_dict(self.connection.writer, joinMsg)
 
         while True:
@@ -160,11 +186,18 @@ class Client:
             #self.connection.writer.close()
 
     async def send_client(self) -&gt; None:
-
+        &#34;&#34;&#34;
+        Main Function used to just handle the sending of data to the    
+            server
+        &#34;&#34;&#34;
         while True:
             await asyncio.sleep(0.5)
             input_str: str = await aioconsole.ainput(&#34;MSG-&gt; &#34;)
-            msg: dict = {&#34;option&#34;: &#34;message&#34;, &#34;message&#34;: input_str, &#34;nick&#34;: self.nick}
+            msg: dict = {
+                        &#34;option&#34;: &#34;message&#34;, 
+                        &#34;message&#34;: input_str, 
+                        &#34;nick&#34;: self.nick
+                        }
             logger.debug(&#34;sending: &#34; + str(msg))
             await comms.send_dict(self.connection.writer, msg)
 
@@ -174,9 +207,12 @@ if __name__ == &#34;__main__&#34;:
     parser = argparse.ArgumentParser()
     parser.add_argument(&#34;--bind&#34;, help=&#34;IP address to bind to&#34;, default=&#34;127.0.0.1&#34;)
     parser.add_argument(&#34;--port&#34;, help=&#34;TCP port&#34;, type=int, default=8005)
-    parser.add_argument(&#34;--maxClients&#34;, help=&#34;Maximum number of clients&#34;, type=int, default=5)
-    parser.add_argument(&#34;--log&#34;, help=&#34;Log threshold (default=INFO)&#34;, type=str, default=&#39;INFO&#39;)
-    parser.add_argument(&#34;--nick&#34;, help=&#34;Nick for the player (Max 20 characters)&#34;, type=str, default=&#34;player&#34;)
+    parser.add_argument(&#34;--maxClients&#34;, help=&#34;Maximum number of clients&#34;, 
+                            type=int, default=5)
+    parser.add_argument(&#34;--log&#34;, help=&#34;Log threshold (default=INFO)&#34;, 
+                            type=str, default=&#39;INFO&#39;)
+    parser.add_argument(&#34;--nick&#34;, help=&#34;Nick for the player (Max 20 characters)&#34;, 
+                    type=str, default=&#34;player&#34;)
     args = parser.parse_args()
 
     # check Logger value
@@ -197,7 +233,8 @@ if __name__ == &#34;__main__&#34;:
     # create file handlet and set level to debug
     if not os.path.exists(&#39;./logs&#39;):
         os.mkdir(&#39;./logs&#39;)
-    logName = r&#39;./logs/client_&#39; + args.nick + &#34;_&#34; + str(int(round(datetime.now().timestamp()))) + &#39;.log&#39;
+    logName = (r&#39;./logs/client_&#39; + args.nick + &#34;_&#34; 
+                + str(int(round(datetime.now().timestamp()))) + &#39;.log&#39;)
     fh = logging.FileHandler(logName)
     fh.setLevel(logging.DEBUG)
     fh.setFormatter(logging.Formatter(&#39;%(asctime)s - [%(name)s, %(levelname)s]: %(message)s&#39;))
@@ -241,8 +278,8 @@ if __name__ == &#34;__main__&#34;:
         logger.error(&#34;\Client Terminated&#34;)
     except OSError as e:
         logger.error(&#34;No Connection to Server: &#34; + str(e))
-    #except ValueError and TypeError as e:
-    #    print(&#34;Error: &#34; + str(e))</code></pre>
+    except Exception as e:
+        print(&#34;Error: &#34; + str(e))</code></pre>
 </details>
 </section>
 <section>
@@ -259,13 +296,15 @@ if __name__ == &#34;__main__&#34;:
 <span>(</span><span>nick: str)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Class that enables the client</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Client:
-
+    &#34;&#34;&#34;
+    Class that enables the client
+    &#34;&#34;&#34;
     def __init__(self, nick: str) -&gt; None:
 
         self.clients: list[ClientValues] = [] 
@@ -304,6 +343,11 @@ if __name__ == &#34;__main__&#34;:
     
 
     async def process_message(self, msg: dict) -&gt; None:
+        &#34;&#34;&#34;
+        Function to process a message received from the server
+        Args:
+            - msg: Received message
+        &#34;&#34;&#34;
         try:
             util.check_dict_fields(msg, [&#39;option&#39;])
 
@@ -339,10 +383,19 @@ if __name__ == &#34;__main__&#34;:
             
 
     async def receive_client(self) -&gt; None:
+        &#34;&#34;&#34;
+        Main Function used to just handle the reception of data from the    
+            server
+        &#34;&#34;&#34;
         ipRaw: tuple= self.connection.writer.get_extra_info(&#39;peername&#39;)
         self.ip: str = ipRaw[0]
         self.port: int = ipRaw[1]
-        joinMsg: dict =  {&#34;option&#34;: &#34;join&#34;, &#34;nick&#34;: self.nick, &#34;ip&#34;: self.ip, &#34;port&#34;: self.port}
+        joinMsg: dict =  {
+                        &#34;option&#34;: &#34;join&#34;, 
+                        &#34;nick&#34;: self.nick, 
+                        &#34;ip&#34;: self.ip, 
+                        &#34;port&#34;: self.port
+                        }
         await comms.send_dict(self.connection.writer, joinMsg)
 
         while True:
@@ -359,11 +412,18 @@ if __name__ == &#34;__main__&#34;:
             #self.connection.writer.close()
 
     async def send_client(self) -&gt; None:
-
+        &#34;&#34;&#34;
+        Main Function used to just handle the sending of data to the    
+            server
+        &#34;&#34;&#34;
         while True:
             await asyncio.sleep(0.5)
             input_str: str = await aioconsole.ainput(&#34;MSG-&gt; &#34;)
-            msg: dict = {&#34;option&#34;: &#34;message&#34;, &#34;message&#34;: input_str, &#34;nick&#34;: self.nick}
+            msg: dict = {
+                        &#34;option&#34;: &#34;message&#34;, 
+                        &#34;message&#34;: input_str, 
+                        &#34;nick&#34;: self.nick
+                        }
             logger.debug(&#34;sending: &#34; + str(msg))
             await comms.send_dict(self.connection.writer, msg)</code></pre>
 </details>
@@ -430,12 +490,21 @@ asyncio.open_connection function)</li>
 <span>async def <span class="ident">process_message</span></span>(<span>self, msg: dict) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Function to process a message received from the server</p>
+<h2 id="args">Args</h2>
+<ul>
+<li>msg: Received message</li>
+</ul></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">async def process_message(self, msg: dict) -&gt; None:
+    &#34;&#34;&#34;
+    Function to process a message received from the server
+    Args:
+        - msg: Received message
+    &#34;&#34;&#34;
     try:
         util.check_dict_fields(msg, [&#39;option&#39;])
 
@@ -474,16 +543,27 @@ asyncio.open_connection function)</li>
 <span>async def <span class="ident">receive_client</span></span>(<span>self) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Main Function used to just handle the reception of data from the
+<br>
+server</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">async def receive_client(self) -&gt; None:
+    &#34;&#34;&#34;
+    Main Function used to just handle the reception of data from the    
+        server
+    &#34;&#34;&#34;
     ipRaw: tuple= self.connection.writer.get_extra_info(&#39;peername&#39;)
     self.ip: str = ipRaw[0]
     self.port: int = ipRaw[1]
-    joinMsg: dict =  {&#34;option&#34;: &#34;join&#34;, &#34;nick&#34;: self.nick, &#34;ip&#34;: self.ip, &#34;port&#34;: self.port}
+    joinMsg: dict =  {
+                    &#34;option&#34;: &#34;join&#34;, 
+                    &#34;nick&#34;: self.nick, 
+                    &#34;ip&#34;: self.ip, 
+                    &#34;port&#34;: self.port
+                    }
     await comms.send_dict(self.connection.writer, joinMsg)
 
     while True:
@@ -504,17 +584,26 @@ asyncio.open_connection function)</li>
 <span>async def <span class="ident">send_client</span></span>(<span>self) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Main Function used to just handle the sending of data to the
+<br>
+server</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">async def send_client(self) -&gt; None:
-
+    &#34;&#34;&#34;
+    Main Function used to just handle the sending of data to the    
+        server
+    &#34;&#34;&#34;
     while True:
         await asyncio.sleep(0.5)
         input_str: str = await aioconsole.ainput(&#34;MSG-&gt; &#34;)
-        msg: dict = {&#34;option&#34;: &#34;message&#34;, &#34;message&#34;: input_str, &#34;nick&#34;: self.nick}
+        msg: dict = {
+                    &#34;option&#34;: &#34;message&#34;, 
+                    &#34;message&#34;: input_str, 
+                    &#34;nick&#34;: self.nick
+                    }
         logger.debug(&#34;sending: &#34; + str(msg))
         await comms.send_dict(self.connection.writer, msg)</code></pre>
 </details>
@@ -526,13 +615,17 @@ asyncio.open_connection function)</li>
 <span>(</span><span>nick: str, ip: str, port: int)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Method generated by attrs for class ClientValues.</p></div>
+<div class="desc"><p>Class used to store the associated values of each client</p>
+<p>Method generated by attrs for class ClientValues.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@dataclass
 class ClientValues:
+    &#34;&#34;&#34;
+    Class used to store the associated values of each client
+    &#34;&#34;&#34;
     nick: str
     ip: str
     port: int </code></pre>
@@ -558,13 +651,17 @@ class ClientValues:
 <span>(</span><span>reader: asyncio.streams.StreamReader, writer: asyncio.streams.StreamWriter, ip: str, port: int)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Method generated by attrs for class Connection.</p></div>
+<div class="desc"><p>Class used to save a connection between the client and the server</p>
+<p>Method generated by attrs for class Connection.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@dataclass
 class Connection:
+    &#34;&#34;&#34;
+    Class used to save a connection between the client and the server
+    &#34;&#34;&#34;
     reader: asyncio.streams.StreamReader
     writer: asyncio.streams.StreamWriter
     ip: str
