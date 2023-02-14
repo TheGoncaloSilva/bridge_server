@@ -1,0 +1,7 @@
+pytest
+accessify
+pytest-asyncio
+termcolor
+attr
+pdoc3==0.10.0
+aioconsole==0.5.1
