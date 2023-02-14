@@ -22,8 +22,8 @@ sys.path.append(parent)
 
 @dataclass
 class Connection:
-    writer: asyncio.streams.StreamWriter
     reader: asyncio.streams.StreamReader
+    writer: asyncio.streams.StreamWriter
     ip: str
     port: int
 
@@ -38,40 +38,57 @@ class Client:
     def __init__(self, nick: str) -> None:
 
         self.clients: list[ClientValues] = [] 
-        self.Connection: Connection | None = None
+        self.connection: Connection | None = None
         self.nick = nick
         
 
-    async def connect_client(self, ip: str, port: int) -> None:
+    async def connect_client(self, ip: str, port: int) -> tuple:
         """
         Function that uses class values to Connect a client with the 
             designated Ip address and Port
         Args:
             - ip: Ip address of the Server
             - port: Port of the Server to operate on
+        Returns:
+            - A tupple object with the asyncio.streams.StreamReader
+            and asyncio.streams.StreamWriter
         Raises:
             - ValueError: if Client was already established
             - TypeError: if supplied  attributes are not of correct type  
             - OSError: if connection wasn't established (handled by 
             asyncio.open_connection function)
         """
-        if self.server != None: raise ValueError(f"Client already initialized")
+        if self.connection != None: raise ValueError(f"Client already initialized")
 
         if not isinstance(ip, str) or not isinstance(port, int):
             raise TypeError("Wrong usage. Use (str, int) types")
         
-        self.Connection = Connection(await asyncio.open_connection(ip, port), ip, port)
+        reader, writer = await asyncio.open_connection(ip, port)
 
-    async def client_life():
-        pass
+        self.connection = Connection(reader, writer, ip, port)
 
-    
+        return (reader, writer)
+
+
+    async def client_life(self) -> None:
+        message: str = "Hello Server"
+        print(f'Send: {message!r}')
+        
+        self.connection.writer.write(message.encode())
+        await self.connection.writer.drain()
+
+        data = await self.connection.reader.read(100)
+        print(f'Received: {data.decode()!r}')
+
+        print('Close the connection')
+        self.connection.writer.close()
+
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--bind", help="IP address to bind to", default="127.0.0.1")
-    parser.add_argument("--port", help="TCP port", type=int, default=8000)
+    parser.add_argument("--port", help="TCP port", type=int, default=8005)
     parser.add_argument("--maxClients", help="Maximum number of clients", type=int, default=5)
     parser.add_argument("--log", help="Log threshold (default=INFO)", type=str, default='INFO')
     parser.add_argument("--nick", help="Nick for the player (Max 20 characters)", type=str, default="player")
@@ -95,7 +112,7 @@ if __name__ == "__main__":
     # create file handlet and set level to debug
     if not os.path.exists('./logs'):
         os.mkdir('./logs')
-    logName = r'./logs/client_' + args.nick + "_" + int(round(datetime.now().timestamp())).time() + '.log'
+    logName = r'./logs/client_' + args.nick + "_" + str(int(round(datetime.now().timestamp()))) + '.log'
     fh = logging.FileHandler(logName)
     fh.setLevel(logging.DEBUG)
     fh.setFormatter(logging.Formatter('%(asctime)s - [%(name)s, %(levelname)s]: %(message)s'))

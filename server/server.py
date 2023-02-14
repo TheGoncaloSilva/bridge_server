@@ -2,8 +2,25 @@ import asyncio
 import argparse
 import logging
 import os
+import sys
 from datetime import datetime
 from attr import dataclass
+
+# Check https://www.geeksforgeeks.org/python-import-from-parent-directory/
+# For better information
+# getting the name of the directory
+# where this file is present.
+current = os.path.dirname(os.path.realpath(__file__))
+ 
+# Getting the parent directory name
+# where the current directory is present.
+parent = os.path.dirname(current)
+ 
+# adding the parent directory to
+# the sys.path.
+sys.path.append(parent)
+
+import common.communication as comms
 
 @dataclass
 class ClientValues:
@@ -12,7 +29,7 @@ class ClientValues:
 
 @dataclass
 class ServerValues:
-    server: int
+    server: asyncio.base_events.Server
     ip: str
     port: int
 
@@ -24,8 +41,6 @@ class Server:
         self.clients: dict[int, ClientValues] = {} # 
         self.server: ServerValues | None = None
         self.lastId: int = 1
-        self.ip: str = ""
-        self.port: int = 0
         
 
     async def create_server(self, ip: str, port: int) -> asyncio.base_events.Server:
@@ -57,15 +72,17 @@ class Server:
         return server
     
 
-    async def handle_client(reader : asyncio.streams.StreamReader, writer : asyncio.streams.StreamWriter):
+    async def handle_client(self, reader : asyncio.streams.StreamReader, writer : asyncio.streams.StreamWriter) -> None:
         data = await reader.read(100)
         message = data.decode()
         addr = writer.get_extra_info('peername')
 
         print(f"Received {message!r} from {addr!r}")
 
-        print(f"Send: {message!r}")
-        writer.write(data)
+        response: str =  "Hello from server"
+        print(f"Send: {response!r}")
+        response = response.encode()
+        writer.write(response)
         await writer.drain()
 
         print("Close the connection")
