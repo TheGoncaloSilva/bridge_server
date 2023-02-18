@@ -2,5 +2,6 @@ pytest
 accessify
 anyio
 attr
+pytest-trio
 pdoc3==0.10.0
 aioconsole==0.5.1
