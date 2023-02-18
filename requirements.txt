@@ -1,7 +1,6 @@
 pytest
 accessify
-pytest-asyncio
-termcolor
+anyio
 attr
 pdoc3==0.10.0
 aioconsole==0.5.1

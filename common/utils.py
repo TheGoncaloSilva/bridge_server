@@ -8,8 +8,12 @@ def check_dict_fields(msg: dict , expectedFields: list[str]) -> None:
         - msg: given dictionary
         - expectedFields: list with the expected keys
     Raises:
-        - ValueError: if expectedFields values are not in msg keys
+        - ValueError: if expectedFields values are not in msg keys and/or
+        msg is empty
     """
+    if msg == {}: 
+        raise ValueError(f"msg cannot be empty")
+    
     for f in expectedFields:
         if f not in msg.keys():
             raise ValueError(f"Missing argument {(f)}")
