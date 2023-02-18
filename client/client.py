@@ -183,7 +183,7 @@ if __name__ == "__main__":
     parser.add_argument("--log", help="Log threshold (default=INFO)", 
                             type=str, default='INFO')
     parser.add_argument("--nick", help="Nick for the player (Max 20 characters)", 
-                    type=str, default="player")
+                    type=str, required=True)
     args = parser.parse_args()
 
     # check Logger value
