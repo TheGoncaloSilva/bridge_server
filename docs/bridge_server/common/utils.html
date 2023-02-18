@@ -37,8 +37,12 @@ def check_dict_fields(msg: dict , expectedFields: list[str]) -&gt; None:
         - msg: given dictionary
         - expectedFields: list with the expected keys
     Raises:
-        - ValueError: if expectedFields values are not in msg keys
+        - ValueError: if expectedFields values are not in msg keys and/or
+        msg is empty
     &#34;&#34;&#34;
+    if msg == {}: 
+        raise ValueError(f&#34;msg cannot be empty&#34;)
+    
     for f in expectedFields:
         if f not in msg.keys():
             raise ValueError(f&#34;Missing argument {(f)}&#34;)
@@ -64,7 +68,8 @@ def check_dict_fields(msg: dict , expectedFields: list[str]) -&gt; None:
 </ul>
 <h2 id="raises">Raises</h2>
 <ul>
-<li>ValueError: if expectedFields values are not in msg keys</li>
+<li>ValueError: if expectedFields values are not in msg keys and/or
+msg is empty</li>
 </ul></div>
 <details class="source">
 <summary>
@@ -77,8 +82,12 @@ def check_dict_fields(msg: dict , expectedFields: list[str]) -&gt; None:
         - msg: given dictionary
         - expectedFields: list with the expected keys
     Raises:
-        - ValueError: if expectedFields values are not in msg keys
+        - ValueError: if expectedFields values are not in msg keys and/or
+        msg is empty
     &#34;&#34;&#34;
+    if msg == {}: 
+        raise ValueError(f&#34;msg cannot be empty&#34;)
+    
     for f in expectedFields:
         if f not in msg.keys():
             raise ValueError(f&#34;Missing argument {(f)}&#34;)</code></pre>
